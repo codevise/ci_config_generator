@@ -11,6 +11,16 @@ describe 'rake ci:config:generate' do
     end
   end
 
+  it 'creates files from template files ending with .ci' do
+    in_tmpdir do
+      File.write('.env.ci', 'FOO=bar')
+
+      rake 'ci:config:generate'
+
+      expect(File.read('.env')).to eq('FOO=bar')
+    end
+  end
+
   it 'interpolates environment variables' do
     in_tmpdir do
       File.write('database.yml.ci', 'db: "%{DB_NAME}"')
@@ -43,7 +53,7 @@ describe 'rake ci:config:generate' do
     end
   end
 
-  it 'does not touch files named exactly .ci', :focus => true do
+  it 'does not touch files named exactly .ci' do
     in_tmpdir do
       File.write('.ci', 'db: "ci"')
 
